@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="css/login.css" rel="stylesheet" type="text/css">
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<title>Insert title here</title>
+<script>
+//AJAX (비동기 자바스크립트-XML/JSON 통신)
+
+//자바의 병렬처리방법 : 스레드(분신술)
+//자바스크립트의 병렬처리방법: 비동기처리(번호표 예약)
+
+$(function () {
+	$('submit').click(function () {
+		var str = $('form').serialize(); // 직렬화(데이터 문자열화)
+		console.log(str);
+		
+		$.ajax({
+			async: true,  // 비동기방식:true, 동기방식:false
+			url: 'main.jsp',
+			data: str,
+			method: 'POST',
+			success: function (result) {
+				setTimeout(function () {
+					$('form').html('<h3>' + result + '</h3>');
+				}, 3000);
+			}
+		}); // ajax()
+		
+		var objImg = '<img src="../images/ajax-loader4.gif">';
+		$('form').html(objImg);
+		
+	}); // click()
+});
+</script>
+</head>
+<body>
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <!-- Tabs Titles -->
+
+    <!-- Icon -->
+    <div class="fadeIn first">
+      <img src="https://t1.daumcdn.net/cfile/tistory/2078CF434D33BF1B1B" alt="User Icon" />
+    </div>
+
+    <!-- Login Form -->
+    <form action="loginProcess.do" id="join" method="post">
+      <input type="text" name="id" class="fadeIn second" name="id" placeholder="아이디를 입력하세요">
+      <input type="password" name="pass" class="fadeIn third" name="pw" placeholder="패스워드를 입력하세요">
+      <input type="submit" class="fadeIn fourth" value="투자의 세계로 접속">
+    </form>
+
+    <!-- Remind Passowrd -->
+    <div id="formFooter">
+      <a class="underlineHover" href="joinForm.do">회원가입</a>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

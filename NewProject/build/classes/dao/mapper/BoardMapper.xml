@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.mapper.BoardMapper">
+
+	<select id="getMaxBoardNum" resultType="int">
+		SELECT MAX(num) FROM board
+	</select>
+	
+	<insert id="insertBoard" parameterType="board">
+		INSERT INTO board (num, name, pass, subject, content, filename, re_ref, re_lev, re_seq, readcount, ip, reg_date) 
+		VALUES (#{num}, #{name}, #{pass}, #{subject}, #{content}, #{filename}, #{re_ref}, #{re_lev}, #{re_seq}, #{readcount}, #{ip}, CURRENT_TIMESTAMP)
+	</insert>
+
+	<select id="getBoards" parameterType="hashmap" resultType="board">
+		SELECT * 
+		FROM board 
+		<where>
+			<if test="search != null and search != ''">
+				subject LIKE #{search} 
+			</if>
+		</where>
+		ORDER BY re_ref DESC, re_seq ASC 
+		OFFSET #{startRow} LIMIT #{pageSize} 
+	</select>
+	
+	<update id="updateGroupSequence" parameterType="board">
+		UPDATE board 
+		SET re_seq = re_seq + 1 
+		WHERE re_ref = #{re_ref} 
+		AND re_seq > #{re_seq} 
+	</update>
+</mapper>
+
+

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.mapper.MemberMapper">
+	<!-- 
+	   parameterType 또는 resultType 속성에서
+	   기본값(byte,short,int,long,float,double,boolean,char,string)
+	   이 올 경우라면 생략가능함.
+	 -->
+	 
+	<select id="getMemberById" parameterType="string" resultType="member">
+		select *
+		from member 
+		where id = #{id}
+	</select>
+	
+	<select id="getAllMembers" resultType="member">
+		SELECT * FROM member ORDER BY id
+	</select>
+	
+	<select id="countById" parameterType="string" resultType="int">
+		SELECT COUNT(*) 
+		FROM member 
+		WHERE id = #{id}
+	</select>
+	
+	<select id="loginCheck" parameterType="string" resultType="string">
+		SELECT password 
+		FROM member 
+		WHERE id = #{id}
+	</select>
+	
+	<insert id="insertMember" parameterType="member">
+		INSERT INTO member (id,password,name,birthday,gender,email,address,tel,mtel,reg_date) 
+		VALUES (#{id}, #{password}, #{name}, #{birthday}, #{gender}, #{email}, #{address}, #{tel}, #{mtel}, CURRENT_TIMESTAMP)
+	</insert>
+	
+	<!-- 전체 회원 삭제 -->
+	<delete id="deleteAllMembers">
+		TRUNCATE TABLE member
+	</delete>
+	
+	<delete id="deleteMember" parameterType="string">
+		DELETE FROM member
+		WHERE id = #{id}
+	</delete>
+	
+	<update id="updateMember" parameterType="member">
+		UPDATE member
+		SET password = #{password}, name = #{name}
+		WHERE id = #{id}
+	</update>
+	
+	
+	
+	<!-- 동적 SQL 변환하기 연습 -->
+	<select id="selectMemberByCondition" parameterType="member" resultType="member">
+		select *
+		from member 
+		where id = #{id}
+		and name = #{name}
+	</select>
+	
+	<select id="selectMemberByConditionChoose" parameterType="member" resultType="member">
+		select *
+		from member 
+		<choose>
+		<when test="id != null">
+			where id = #{id}
+		</when>
+		<when test="name != null">
+			where name = #{name}
+		</when>
+		<otherwise>
+			where id = 'bbbb'
+			and name = '송혜교'
+		</otherwise>
+		</choose>
+	</select>
+	
+	<select id="selectMemberByConditionTrim" parameterType="member" resultType="member">
+		select *
+		from member 
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			<if test="id != null">
+				AND id = #{id}
+			</if>
+			<if test="name != null">
+				AND name = #{name}
+			</if>
+		</trim>
+	</select>
+	
+	<update id="updateMemberByCondition" parameterType="member">
+		UPDATE member
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="password != null">
+				password = #{password},
+			</if>
+			<if test="name != null">
+				name = #{name}
+			</if>
+		</trim>
+		WHERE id = #{id}
+	</update>
+	
+	<select id="selectMemberByConditionForeach" parameterType="hashmap" resultType="member">
+		select *
+		from member 
+		<trim prefix="WHERE">
+			<if test="names != null">
+				WHERE name IN 
+				<foreach collection="names" item="name" index="index" open="(" close=")" separator=",">
+					#{name}
+				</foreach>
+			</if>
+		</trim>
+	</select>
+	
+</mapper>
+
+
+
+
+
+
